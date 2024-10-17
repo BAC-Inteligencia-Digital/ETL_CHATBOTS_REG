@@ -1,0 +1,12 @@
+﻿<?xml version="1.0"?>
+<DTS:ConnectionManager xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:ObjectName="CRCORSYBIQBD.BACNET.CORP.REDBAC.com,58525.DWH_PERSONAS"
+  DTS:DTSID="{00E0885F-2D74-42BA-AFF1-5B4267063236}"
+  DTS:CreationName="OLEDB">
+  <DTS:ObjectData>
+    <DTS:ConnectionManager
+      DTS:ConnectRetryCount="1"
+      DTS:ConnectRetryInterval="5"
+      DTS:ConnectionString="Data Source=CRCORSYBIQBD.BACNET.CORP.REDBAC.com,58525;Initial Catalog=DWH_PERSONAS;Provider=SQLNCLI11.1;Integrated Security=SSPI;Application Name=SSIS-ETL_CHATBOT_PAN-{00E0885F-2D74-42BA-AFF1-5B4267063236}CRCORSYBIQBD.BACNET.CORP.REDBAC.com,58525.DWH_PERSONAS;Auto Translate=False;" />
+  </DTS:ObjectData>
+</DTS:ConnectionManager>

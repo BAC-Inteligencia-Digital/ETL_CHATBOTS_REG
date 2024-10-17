@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<DTS:ConnectionManager xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:ObjectName="DWSIEBEL"
+  DTS:DTSID="{749EA376-6BA2-4B45-BC77-2C2E4D4107AE}"
+  DTS:CreationName="OLEDB">
+  <DTS:ObjectData>
+    <DTS:ConnectionManager
+      DTS:ConnectRetryCount="1"
+      DTS:ConnectRetryInterval="5"
+      DTS:ConnectionString="Data Source=CRCORSYBIQBD.BACNET.CORP.REDBAC.com,58523;Initial Catalog=DWSiebel;Provider=SQLOLEDB.1;Integrated Security=SSPI;Application Name=SSIS-ETL_CHATBOT_PAN-{749EA376-6BA2-4B45-BC77-2C2E4D4107AE}CRCORSYBIQBD.BACNET.CORP.REDBAC.com,58523.DWSiebel;Auto Translate=False;" />
+  </DTS:ObjectData>
+</DTS:ConnectionManager>

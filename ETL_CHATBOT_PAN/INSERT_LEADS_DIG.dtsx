@@ -1,0 +1,2429 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="10/3/2024 8:39:16 AM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="BCODBRENESM_P"
+  DTS:CreatorName="COMBCOCR\daniel.brenesm"
+  DTS:DTSID="{97F634F7-46CC-4AB4-9B23-1B56CD2B6B2D}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="16.0.5556.0"
+  DTS:LocaleID="5130"
+  DTS:ObjectName="INSERT_LEADS_DIG"
+  DTS:PackageType="5"
+  DTS:VersionBuild="11"
+  DTS:VersionGUID="{B7228A70-AB3F-4443-B784-844D92699D4F}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[LIBRO]"
+      DTS:CreationName="EXCEL"
+      DTS:DTSID="{6F97BA2B-E8A7-41A5-9DF6-762E7A800B12}"
+      DTS:ObjectName="LIBRO">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectRetryCount="0"
+          DTS:ConnectRetryInterval="0"
+          DTS:ConnectionString="Provider=Microsoft.ACE.OLEDB.16.0;Data Source=C:\Users\daniel.brenesm\Desktop\LIBRO.xlsx;Extended Properties=&quot;Excel 12.0 XML;HDR=YES&quot;;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[OUTPUT CHATBOT]"
+      DTS:CreationName="EXCEL"
+      DTS:DTSID="{B1B5885D-4F8E-4F48-8F56-E1B5C96487F6}"
+      DTS:ObjectName="OUTPUT CHATBOT">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectRetryCount="0"
+          DTS:ConnectRetryInterval="0"
+          DTS:ConnectionString="Provider=Microsoft.ACE.OLEDB.16.0;Data Source=C:\Users\daniel.brenesm\Downloads\Tarjeta_PreaprobadaPAN.xlsx;Extended Properties=&quot;Excel 12.0 XML;HDR=YES&quot;;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Contenedor de secuencias"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Contenedor de secuencias"
+      DTS:DTSID="{F72E801E-565B-4459-9C27-B1BF61CE56CC}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Contenedor de secuencias">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Contenedor de secuencias\ELIMINAR REGISTROS ANTIGUOS"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Tarea Ejecutar SQL"
+          DTS:DTSID="{5E01D90A-9678-432F-8DDB-884CA6CD4A8D}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="ELIMINAR REGISTROS ANTIGUOS"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{B1E56C98-5D98-4133-8781-64F80D711844}"
+              SQLTask:SqlStatementSource="DELETE&#xA;FROM LEADS_DIG.LEADS_DIGITALES_REG&#xA;WHERE CANAL = 'Chatbot' and PAIS = 'PAN' AND AÑO_MODIFICACION = 2024 AND MES_MODIFICACION = 10" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Contenedor de secuencias\OBTENER LEADS"
+          DTS:CreationName="Microsoft.Pipeline"
+          DTS:Description="Data Flow Task"
+          DTS:DTSID="{78FF7834-4EA4-48AF-B042-6257D5CF5173}"
+          DTS:ExecutableType="Microsoft.Pipeline"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="OBTENER LEADS"
+          DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <pipeline
+              version="1">
+              <components>
+                <component
+                  refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS"
+                  componentClassID="Microsoft.OLEDBSource"
+                  contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+                  description="OLE DB Source"
+                  name="INFO LEADS"
+                  usesDispositions="true"
+                  version="7">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                      name="CommandTimeout">0</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the name of the database object used to open a rowset."
+                      name="OpenRowset"></property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the variable that contains the name of the database object used to open a rowset."
+                      name="OpenRowsetVariable"></property>
+                    <property
+                      dataType="System.String"
+                      description="The SQL command to be executed."
+                      name="SqlCommand"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * 
+from (
+		select ROW_ID AS ID_OPORTUNIDAD,
+			   'PAN' AS PAIS,
+			   CREATED AS FECHA_CREACION, 
+			   LAST_UPD AS FECHA_MODIFICACION,
+			   YEAR(LAST_UPD) AS AÑO_MODIFICACION,
+			   MONTH(LAST_UPD) AS MES_MODIFICACION,
+			   'Tarjeta Nueva' as PRODUCTO,
+				'Chatbot' as CANAL,
+				CASE WHEN STATUS_CD IN ('Interesado','Aceptado','Generado','Abierto') THEN 'En proceso' 
+					 when status_cd = 'Vencido' then 'Perdido'
+					 else STATUS_CD end as ESTADO,
+				STATUS_CD AS ETAPA_ACTUAL,
+				REASON_WON_LOST_CD AS RAZON,
+				CREATED_BY AS USUARIO_APERTURA,
+				LAST_UPD_BY AS USUARIO_MODIFICA,
+				'SIEBEL' AS ORIGEN,
+				ROW_ID AS PAR_ID_OPORTUNIDAD,
+				0 AS FLAG_CLEAN
+		FROM [DWSiebel].[PAN].[S_OPTY] 
+		WHERE OPTY_CD = 'PREAPROBADO'
+)a
+WHERE MES_MODIFICACION = 10 AND AÑO_MODIFICACION = 2024</property>
+                    <property
+                      dataType="System.String"
+                      description="The variable that contains the SQL command to be executed."
+                      name="SqlCommandVariable"></property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the column code page to use when code page information is unavailable from the data source."
+                      name="DefaultCodePage">1252</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Forces the use of the DefaultCodePage property value when describing character data."
+                      name="AlwaysUseDefaultCodePage">false</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the mode used to access the database."
+                      name="AccessMode"
+                      typeConverter="AccessMode">2</property>
+                    <property
+                      dataType="System.String"
+                      description="The mappings between the parameters in the SQL command and variables."
+                      name="ParameterMapping"></property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Connections[OleDbConnection]"
+                      connectionManagerID="{749EA376-6BA2-4B45-BC77-2C2E4D4107AE}:external"
+                      connectionManagerRefId="Project.ConnectionManagers[DWSIEBEL]"
+                      description="The OLE DB runtime connection used to access the database."
+                      name="OleDbConnection" />
+                  </connections>
+                  <outputs>
+                    <output
+                      refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output]"
+                      name="OLE DB Source Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[ID_OPORTUNIDAD]"
+                          codePage="1252"
+                          dataType="str"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].ExternalColumns[ID_OPORTUNIDAD]"
+                          length="15"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[ID_OPORTUNIDAD]"
+                          name="ID_OPORTUNIDAD"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[PAIS]"
+                          codePage="1252"
+                          dataType="str"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].ExternalColumns[PAIS]"
+                          length="3"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[PAIS]"
+                          name="PAIS"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[FECHA_CREACION]"
+                          dataType="dbTimeStamp"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].ExternalColumns[FECHA_CREACION]"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[FECHA_CREACION]"
+                          name="FECHA_CREACION"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[FECHA_MODIFICACION]"
+                          dataType="dbTimeStamp"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].ExternalColumns[FECHA_MODIFICACION]"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[FECHA_MODIFICACION]"
+                          name="FECHA_MODIFICACION"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[AÑO_MODIFICACION]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].ExternalColumns[AÑO_MODIFICACION]"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[AÑO_MODIFICACION]"
+                          name="AÑO_MODIFICACION"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[MES_MODIFICACION]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].ExternalColumns[MES_MODIFICACION]"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[MES_MODIFICACION]"
+                          name="MES_MODIFICACION"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[PRODUCTO]"
+                          codePage="1252"
+                          dataType="str"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].ExternalColumns[PRODUCTO]"
+                          length="13"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[PRODUCTO]"
+                          name="PRODUCTO"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[CANAL]"
+                          codePage="1252"
+                          dataType="str"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].ExternalColumns[CANAL]"
+                          length="7"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[CANAL]"
+                          name="CANAL"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[ESTADO]"
+                          codePage="1252"
+                          dataType="str"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].ExternalColumns[ESTADO]"
+                          length="30"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[ESTADO]"
+                          name="ESTADO"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[ETAPA_ACTUAL]"
+                          codePage="1252"
+                          dataType="str"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].ExternalColumns[ETAPA_ACTUAL]"
+                          length="30"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[ETAPA_ACTUAL]"
+                          name="ETAPA_ACTUAL"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[RAZON]"
+                          codePage="1252"
+                          dataType="str"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].ExternalColumns[RAZON]"
+                          length="30"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[RAZON]"
+                          name="RAZON"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[USUARIO_APERTURA]"
+                          codePage="1252"
+                          dataType="str"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].ExternalColumns[USUARIO_APERTURA]"
+                          length="15"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[USUARIO_APERTURA]"
+                          name="USUARIO_APERTURA"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[USUARIO_MODIFICA]"
+                          codePage="1252"
+                          dataType="str"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].ExternalColumns[USUARIO_MODIFICA]"
+                          length="15"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[USUARIO_MODIFICA]"
+                          name="USUARIO_MODIFICA"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[ORIGEN]"
+                          codePage="1252"
+                          dataType="str"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].ExternalColumns[ORIGEN]"
+                          length="6"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[ORIGEN]"
+                          name="ORIGEN"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[PAR_ID_OPORTUNIDAD]"
+                          codePage="1252"
+                          dataType="str"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].ExternalColumns[PAR_ID_OPORTUNIDAD]"
+                          length="15"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[PAR_ID_OPORTUNIDAD]"
+                          name="PAR_ID_OPORTUNIDAD"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[FLAG_CLEAN]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].ExternalColumns[FLAG_CLEAN]"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[FLAG_CLEAN]"
+                          name="FLAG_CLEAN"
+                          truncationRowDisposition="FailComponent" />
+                      </outputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].ExternalColumns[ID_OPORTUNIDAD]"
+                          codePage="1252"
+                          dataType="str"
+                          length="15"
+                          name="ID_OPORTUNIDAD" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].ExternalColumns[PAIS]"
+                          codePage="1252"
+                          dataType="str"
+                          length="3"
+                          name="PAIS" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].ExternalColumns[FECHA_CREACION]"
+                          dataType="dbTimeStamp"
+                          name="FECHA_CREACION" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].ExternalColumns[FECHA_MODIFICACION]"
+                          dataType="dbTimeStamp"
+                          name="FECHA_MODIFICACION" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].ExternalColumns[AÑO_MODIFICACION]"
+                          dataType="i4"
+                          name="AÑO_MODIFICACION" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].ExternalColumns[MES_MODIFICACION]"
+                          dataType="i4"
+                          name="MES_MODIFICACION" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].ExternalColumns[PRODUCTO]"
+                          codePage="1252"
+                          dataType="str"
+                          length="13"
+                          name="PRODUCTO" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].ExternalColumns[CANAL]"
+                          codePage="1252"
+                          dataType="str"
+                          length="7"
+                          name="CANAL" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].ExternalColumns[ESTADO]"
+                          codePage="1252"
+                          dataType="str"
+                          length="30"
+                          name="ESTADO" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].ExternalColumns[ETAPA_ACTUAL]"
+                          codePage="1252"
+                          dataType="str"
+                          length="30"
+                          name="ETAPA_ACTUAL" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].ExternalColumns[RAZON]"
+                          codePage="1252"
+                          dataType="str"
+                          length="30"
+                          name="RAZON" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].ExternalColumns[USUARIO_APERTURA]"
+                          codePage="1252"
+                          dataType="str"
+                          length="15"
+                          name="USUARIO_APERTURA" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].ExternalColumns[USUARIO_MODIFICA]"
+                          codePage="1252"
+                          dataType="str"
+                          length="15"
+                          name="USUARIO_MODIFICA" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].ExternalColumns[ORIGEN]"
+                          codePage="1252"
+                          dataType="str"
+                          length="6"
+                          name="ORIGEN" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].ExternalColumns[PAR_ID_OPORTUNIDAD]"
+                          codePage="1252"
+                          dataType="str"
+                          length="15"
+                          name="PAR_ID_OPORTUNIDAD" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].ExternalColumns[FLAG_CLEAN]"
+                          dataType="i4"
+                          name="FLAG_CLEAN" />
+                      </externalMetadataColumns>
+                    </output>
+                    <output
+                      refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output]"
+                      isErrorOut="true"
+                      name="OLE DB Source Error Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output].Columns[ID_OPORTUNIDAD]"
+                          codePage="1252"
+                          dataType="str"
+                          length="15"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output].Columns[ID_OPORTUNIDAD]"
+                          name="ID_OPORTUNIDAD" />
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output].Columns[PAIS]"
+                          codePage="1252"
+                          dataType="str"
+                          length="3"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output].Columns[PAIS]"
+                          name="PAIS" />
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output].Columns[FECHA_CREACION]"
+                          dataType="dbTimeStamp"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output].Columns[FECHA_CREACION]"
+                          name="FECHA_CREACION" />
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output].Columns[FECHA_MODIFICACION]"
+                          dataType="dbTimeStamp"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output].Columns[FECHA_MODIFICACION]"
+                          name="FECHA_MODIFICACION" />
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output].Columns[AÑO_MODIFICACION]"
+                          dataType="i4"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output].Columns[AÑO_MODIFICACION]"
+                          name="AÑO_MODIFICACION" />
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output].Columns[MES_MODIFICACION]"
+                          dataType="i4"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output].Columns[MES_MODIFICACION]"
+                          name="MES_MODIFICACION" />
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output].Columns[PRODUCTO]"
+                          codePage="1252"
+                          dataType="str"
+                          length="13"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output].Columns[PRODUCTO]"
+                          name="PRODUCTO" />
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output].Columns[CANAL]"
+                          codePage="1252"
+                          dataType="str"
+                          length="7"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output].Columns[CANAL]"
+                          name="CANAL" />
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output].Columns[ESTADO]"
+                          codePage="1252"
+                          dataType="str"
+                          length="30"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output].Columns[ESTADO]"
+                          name="ESTADO" />
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output].Columns[ETAPA_ACTUAL]"
+                          codePage="1252"
+                          dataType="str"
+                          length="30"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output].Columns[ETAPA_ACTUAL]"
+                          name="ETAPA_ACTUAL" />
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output].Columns[RAZON]"
+                          codePage="1252"
+                          dataType="str"
+                          length="30"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output].Columns[RAZON]"
+                          name="RAZON" />
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output].Columns[USUARIO_APERTURA]"
+                          codePage="1252"
+                          dataType="str"
+                          length="15"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output].Columns[USUARIO_APERTURA]"
+                          name="USUARIO_APERTURA" />
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output].Columns[USUARIO_MODIFICA]"
+                          codePage="1252"
+                          dataType="str"
+                          length="15"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output].Columns[USUARIO_MODIFICA]"
+                          name="USUARIO_MODIFICA" />
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output].Columns[ORIGEN]"
+                          codePage="1252"
+                          dataType="str"
+                          length="6"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output].Columns[ORIGEN]"
+                          name="ORIGEN" />
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output].Columns[PAR_ID_OPORTUNIDAD]"
+                          codePage="1252"
+                          dataType="str"
+                          length="15"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output].Columns[PAR_ID_OPORTUNIDAD]"
+                          name="PAR_ID_OPORTUNIDAD" />
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output].Columns[FLAG_CLEAN]"
+                          dataType="i4"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output].Columns[FLAG_CLEAN]"
+                          name="FLAG_CLEAN" />
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join"
+                  componentClassID="Microsoft.MergeJoin"
+                  contactInfo="Merge Join;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
+                  description="Combine two sorted data flows into one using the FULL, LEFT, or INNER join. We recommend this transformation when data flows can be sorted at their sources."
+                  name="Merge Join"
+                  version="1">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the type of join to perform."
+                      name="JoinType"
+                      typeConverter="JoinType">2</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the number of columns in the ordering key."
+                      name="NumKeyColumns">1</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indicates whether the null values are treated as equal values."
+                      name="TreatNullsAsEqual">true</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Indicates the requested maximum buffers per input before blocking."
+                      name="MaxBuffersPerInput">5</property>
+                  </properties>
+                  <inputs>
+                    <input
+                      refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Left Input]"
+                      hasSideEffects="true"
+                      name="Merge Join Left Input">
+                      <inputColumns>
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Left Input].Columns[Id_Oportunidad]"
+                          cachedDataType="wstr"
+                          cachedLength="255"
+                          cachedName="Id_Oportunidad"
+                          cachedSortKeyPosition="1"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Sort.Outputs[Sort Output].Columns[Id_Oportunidad]" />
+                      </inputColumns>
+                      <externalMetadataColumns />
+                    </input>
+                    <input
+                      refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Right Input]"
+                      hasSideEffects="true"
+                      name="Merge Join Right Input">
+                      <inputColumns>
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Right Input].Columns[ID_OPORTUNIDAD]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="15"
+                          cachedName="ID_OPORTUNIDAD"
+                          cachedSortKeyPosition="1"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[ID_OPORTUNIDAD]" />
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Right Input].Columns[PAIS]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="3"
+                          cachedName="PAIS"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[PAIS]" />
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Right Input].Columns[FECHA_CREACION]"
+                          cachedDataType="dbTimeStamp"
+                          cachedName="FECHA_CREACION"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[FECHA_CREACION]" />
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Right Input].Columns[FECHA_MODIFICACION]"
+                          cachedDataType="dbTimeStamp"
+                          cachedName="FECHA_MODIFICACION"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[FECHA_MODIFICACION]" />
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Right Input].Columns[AÑO_MODIFICACION]"
+                          cachedDataType="i4"
+                          cachedName="AÑO_MODIFICACION"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[AÑO_MODIFICACION]" />
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Right Input].Columns[MES_MODIFICACION]"
+                          cachedDataType="i4"
+                          cachedName="MES_MODIFICACION"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[MES_MODIFICACION]" />
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Right Input].Columns[PRODUCTO]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="13"
+                          cachedName="PRODUCTO"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[PRODUCTO]" />
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Right Input].Columns[CANAL]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="7"
+                          cachedName="CANAL"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[CANAL]" />
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Right Input].Columns[ESTADO]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="30"
+                          cachedName="ESTADO"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[ESTADO]" />
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Right Input].Columns[ETAPA_ACTUAL]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="30"
+                          cachedName="ETAPA_ACTUAL"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[ETAPA_ACTUAL]" />
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Right Input].Columns[RAZON]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="30"
+                          cachedName="RAZON"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[RAZON]" />
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Right Input].Columns[USUARIO_APERTURA]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="15"
+                          cachedName="USUARIO_APERTURA"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[USUARIO_APERTURA]" />
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Right Input].Columns[USUARIO_MODIFICA]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="15"
+                          cachedName="USUARIO_MODIFICA"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[USUARIO_MODIFICA]" />
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Right Input].Columns[ORIGEN]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="6"
+                          cachedName="ORIGEN"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[ORIGEN]" />
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Right Input].Columns[PAR_ID_OPORTUNIDAD]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="15"
+                          cachedName="PAR_ID_OPORTUNIDAD"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[PAR_ID_OPORTUNIDAD]" />
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Right Input].Columns[FLAG_CLEAN]"
+                          cachedDataType="i4"
+                          cachedName="FLAG_CLEAN"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[FLAG_CLEAN]" />
+                      </inputColumns>
+                      <externalMetadataColumns />
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output]"
+                      isSorted="true"
+                      name="Merge Join Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[PAIS]"
+                          codePage="1252"
+                          dataType="str"
+                          length="3"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[PAIS]"
+                          name="PAIS">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="The input column associated with this output column"
+                              name="InputColumnID">#{Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Right Input].Columns[PAIS]}</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[FECHA_CREACION]"
+                          dataType="dbTimeStamp"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[FECHA_CREACION]"
+                          name="FECHA_CREACION">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="The input column associated with this output column"
+                              name="InputColumnID">#{Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Right Input].Columns[FECHA_CREACION]}</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[FECHA_MODIFICACION]"
+                          dataType="dbTimeStamp"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[FECHA_MODIFICACION]"
+                          name="FECHA_MODIFICACION">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="The input column associated with this output column"
+                              name="InputColumnID">#{Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Right Input].Columns[FECHA_MODIFICACION]}</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[AÑO_MODIFICACION]"
+                          dataType="i4"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[AÑO_MODIFICACION]"
+                          name="AÑO_MODIFICACION">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="The input column associated with this output column"
+                              name="InputColumnID">#{Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Right Input].Columns[AÑO_MODIFICACION]}</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[MES_MODIFICACION]"
+                          dataType="i4"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[MES_MODIFICACION]"
+                          name="MES_MODIFICACION">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="The input column associated with this output column"
+                              name="InputColumnID">#{Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Right Input].Columns[MES_MODIFICACION]}</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[PRODUCTO]"
+                          codePage="1252"
+                          dataType="str"
+                          length="13"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[PRODUCTO]"
+                          name="PRODUCTO">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="The input column associated with this output column"
+                              name="InputColumnID">#{Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Right Input].Columns[PRODUCTO]}</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[CANAL]"
+                          codePage="1252"
+                          dataType="str"
+                          length="7"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[CANAL]"
+                          name="CANAL">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="The input column associated with this output column"
+                              name="InputColumnID">#{Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Right Input].Columns[CANAL]}</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[ESTADO]"
+                          codePage="1252"
+                          dataType="str"
+                          length="30"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[ESTADO]"
+                          name="ESTADO">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="The input column associated with this output column"
+                              name="InputColumnID">#{Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Right Input].Columns[ESTADO]}</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[ETAPA_ACTUAL]"
+                          codePage="1252"
+                          dataType="str"
+                          length="30"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[ETAPA_ACTUAL]"
+                          name="ETAPA_ACTUAL">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="The input column associated with this output column"
+                              name="InputColumnID">#{Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Right Input].Columns[ETAPA_ACTUAL]}</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[RAZON]"
+                          codePage="1252"
+                          dataType="str"
+                          length="30"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[RAZON]"
+                          name="RAZON">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="The input column associated with this output column"
+                              name="InputColumnID">#{Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Right Input].Columns[RAZON]}</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[USUARIO_APERTURA]"
+                          codePage="1252"
+                          dataType="str"
+                          length="15"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[USUARIO_APERTURA]"
+                          name="USUARIO_APERTURA">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="The input column associated with this output column"
+                              name="InputColumnID">#{Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Right Input].Columns[USUARIO_APERTURA]}</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[USUARIO_MODIFICA]"
+                          codePage="1252"
+                          dataType="str"
+                          length="15"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[USUARIO_MODIFICA]"
+                          name="USUARIO_MODIFICA">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="The input column associated with this output column"
+                              name="InputColumnID">#{Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Right Input].Columns[USUARIO_MODIFICA]}</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[ORIGEN]"
+                          codePage="1252"
+                          dataType="str"
+                          length="6"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[ORIGEN]"
+                          name="ORIGEN">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="The input column associated with this output column"
+                              name="InputColumnID">#{Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Right Input].Columns[ORIGEN]}</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[PAR_ID_OPORTUNIDAD]"
+                          codePage="1252"
+                          dataType="str"
+                          length="15"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[PAR_ID_OPORTUNIDAD]"
+                          name="PAR_ID_OPORTUNIDAD">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="The input column associated with this output column"
+                              name="InputColumnID">#{Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Right Input].Columns[PAR_ID_OPORTUNIDAD]}</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[FLAG_CLEAN]"
+                          dataType="i4"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[FLAG_CLEAN]"
+                          name="FLAG_CLEAN">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="The input column associated with this output column"
+                              name="InputColumnID">#{Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Right Input].Columns[FLAG_CLEAN]}</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[ID_OPORTUNIDAD]"
+                          codePage="1252"
+                          dataType="str"
+                          length="15"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[ID_OPORTUNIDAD]"
+                          name="ID_OPORTUNIDAD"
+                          sortKeyPosition="1">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="The input column associated with this output column"
+                              name="InputColumnID">#{Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Right Input].Columns[ID_OPORTUNIDAD]}</property>
+                          </properties>
+                        </outputColumn>
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination"
+                  componentClassID="Microsoft.OLEDBDestination"
+                  contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+                  description="OLE DB Destination"
+                  name="OLE DB Destination"
+                  usesDispositions="true"
+                  version="4">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                      name="CommandTimeout">0</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the name of the database object used to open a rowset."
+                      name="OpenRowset">[LEADS_DIG].[LEADS_DIGITALES_REG]</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the variable that contains the name of the database object used to open a rowset."
+                      name="OpenRowsetVariable"></property>
+                    <property
+                      dataType="System.String"
+                      description="The SQL command to be executed."
+                      name="SqlCommand"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the column code page to use when code page information is unavailable from the data source."
+                      name="DefaultCodePage">1252</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Forces the use of the DefaultCodePage property value when describing character data."
+                      name="AlwaysUseDefaultCodePage">false</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the mode used to access the database."
+                      name="AccessMode"
+                      typeConverter="AccessMode">3</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                      name="FastLoadKeepIdentity">false</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                      name="FastLoadKeepNulls">false</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                      name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                      name="FastLoadMaxInsertCommitSize">2147483647</property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Connections[OleDbConnection]"
+                      connectionManagerID="{B1E56C98-5D98-4133-8781-64F80D711844}:external"
+                      connectionManagerRefId="Project.ConnectionManagers[CANALES]"
+                      description="The OLE DB runtime connection used to access the database."
+                      name="OleDbConnection" />
+                  </connections>
+                  <inputs>
+                    <input
+                      refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input]"
+                      errorOrTruncationOperation="Insert"
+                      errorRowDisposition="FailComponent"
+                      hasSideEffects="true"
+                      name="OLE DB Destination Input">
+                      <inputColumns>
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[PAIS]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="3"
+                          cachedName="PAIS"
+                          externalMetadataColumnId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PAIS]"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[PAIS]" />
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[FECHA_CREACION]"
+                          cachedDataType="dbTimeStamp"
+                          cachedName="FECHA_CREACION"
+                          externalMetadataColumnId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[FECHA_CREACION]"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[FECHA_CREACION]" />
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[FECHA_MODIFICACION]"
+                          cachedDataType="dbTimeStamp"
+                          cachedName="FECHA_MODIFICACION"
+                          externalMetadataColumnId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[FECHA_MODIFICACION]"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[FECHA_MODIFICACION]" />
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[AÑO_MODIFICACION]"
+                          cachedDataType="i4"
+                          cachedName="AÑO_MODIFICACION"
+                          externalMetadataColumnId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[AÑO_MODIFICACION]"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[AÑO_MODIFICACION]" />
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[MES_MODIFICACION]"
+                          cachedDataType="i4"
+                          cachedName="MES_MODIFICACION"
+                          externalMetadataColumnId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[MES_MODIFICACION]"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[MES_MODIFICACION]" />
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[PRODUCTO]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="13"
+                          cachedName="PRODUCTO"
+                          externalMetadataColumnId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PRODUCTO]"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[PRODUCTO]" />
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[CANAL]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="7"
+                          cachedName="CANAL"
+                          externalMetadataColumnId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CANAL]"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[CANAL]" />
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[ESTADO]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="30"
+                          cachedName="ESTADO"
+                          externalMetadataColumnId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ESTADO]"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[ESTADO]" />
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[ETAPA_ACTUAL]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="30"
+                          cachedName="ETAPA_ACTUAL"
+                          externalMetadataColumnId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ETAPA_ACTUAL]"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[ETAPA_ACTUAL]" />
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[RAZON]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="30"
+                          cachedName="RAZON"
+                          externalMetadataColumnId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[RAZON]"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[RAZON]" />
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[USUARIO_APERTURA]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="15"
+                          cachedName="USUARIO_APERTURA"
+                          externalMetadataColumnId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[USUARIO_APERTURA]"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[USUARIO_APERTURA]" />
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[USUARIO_MODIFICA]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="15"
+                          cachedName="USUARIO_MODIFICA"
+                          externalMetadataColumnId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[USUARIO_MODIFICA]"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[USUARIO_MODIFICA]" />
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[ORIGEN]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="6"
+                          cachedName="ORIGEN"
+                          externalMetadataColumnId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ORIGEN]"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[ORIGEN]" />
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[PAR_ID_OPORTUNIDAD]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="15"
+                          cachedName="PAR_ID_OPORTUNIDAD"
+                          externalMetadataColumnId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PAR_ID_OPORTUNIDAD]"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[PAR_ID_OPORTUNIDAD]" />
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[FLAG_CLEAN]"
+                          cachedDataType="i4"
+                          cachedName="FLAG_CLEAN"
+                          externalMetadataColumnId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[FLAG_CLEAN]"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[FLAG_CLEAN]" />
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[ID_OPORTUNIDAD]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="15"
+                          cachedName="ID_OPORTUNIDAD"
+                          cachedSortKeyPosition="1"
+                          externalMetadataColumnId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ID_OPORTUNIDAD]"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output].Columns[ID_OPORTUNIDAD]" />
+                      </inputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ID_OPORTUNIDAD]"
+                          codePage="1252"
+                          dataType="str"
+                          length="100"
+                          name="ID_OPORTUNIDAD" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PAIS]"
+                          codePage="1252"
+                          dataType="str"
+                          length="20"
+                          name="PAIS" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[FECHA_CREACION]"
+                          dataType="wstr"
+                          length="10"
+                          name="FECHA_CREACION" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[FECHA_MODIFICACION]"
+                          dataType="wstr"
+                          length="10"
+                          name="FECHA_MODIFICACION" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[MES_MODIFICACION]"
+                          dataType="i4"
+                          name="MES_MODIFICACION" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[AÑO_MODIFICACION]"
+                          dataType="i4"
+                          name="AÑO_MODIFICACION" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PRODUCTO]"
+                          codePage="1252"
+                          dataType="str"
+                          length="150"
+                          name="PRODUCTO" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CANAL]"
+                          codePage="1252"
+                          dataType="str"
+                          length="100"
+                          name="CANAL" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ESTADO]"
+                          codePage="1252"
+                          dataType="str"
+                          length="60"
+                          name="ESTADO" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ETAPA_ACTUAL]"
+                          codePage="1252"
+                          dataType="str"
+                          length="60"
+                          name="ETAPA_ACTUAL" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[RAZON]"
+                          codePage="1252"
+                          dataType="str"
+                          length="255"
+                          name="RAZON" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[USUARIO_APERTURA]"
+                          codePage="1252"
+                          dataType="str"
+                          length="60"
+                          name="USUARIO_APERTURA" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[USUARIO_MODIFICA]"
+                          codePage="1252"
+                          dataType="str"
+                          length="60"
+                          name="USUARIO_MODIFICA" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ORIGEN]"
+                          codePage="1252"
+                          dataType="str"
+                          length="50"
+                          name="ORIGEN" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PAR_ID_OPORTUNIDAD]"
+                          codePage="1252"
+                          dataType="str"
+                          length="100"
+                          name="PAR_ID_OPORTUNIDAD" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[FLAG_CLEAN]"
+                          dataType="i4"
+                          name="FLAG_CLEAN" />
+                      </externalMetadataColumns>
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Outputs[OLE DB Destination Error Output]"
+                      exclusionGroup="1"
+                      isErrorOut="true"
+                      name="OLE DB Destination Error Output"
+                      synchronousInputId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT"
+                  componentClassID="Microsoft.ExcelSource"
+                  contactInfo="Excel Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
+                  description="Excel Source"
+                  name="OUTPUT CHATBOT"
+                  usesDispositions="true"
+                  version="1">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                      name="CommandTimeout">0</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the name of the database object used to open a rowset."
+                      name="OpenRowset">Hoja1$</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the variable that contains the name of the database object used to open a rowset."
+                      name="OpenRowsetVariable"></property>
+                    <property
+                      dataType="System.String"
+                      description="The SQL command to be executed."
+                      name="SqlCommand"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                    <property
+                      dataType="System.String"
+                      description="The variable that contains the SQL command to be executed."
+                      name="SqlCommandVariable"></property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the mode used to access the database."
+                      name="AccessMode"
+                      typeConverter="AccessMode">0</property>
+                    <property
+                      dataType="System.String"
+                      description="The mapping from parameters in the SQL command to variables."
+                      name="ParameterMapping"></property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Connections[OleDbConnection]"
+                      connectionManagerID="Package.ConnectionManagers[OUTPUT CHATBOT]"
+                      connectionManagerRefId="Package.ConnectionManagers[OUTPUT CHATBOT]"
+                      description="The OLE DB runtime connection used to access the database."
+                      name="OleDbConnection" />
+                  </connections>
+                  <outputs>
+                    <output
+                      refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output]"
+                      name="Excel Source Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].Columns[Id_Oportunidad]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].ExternalColumns[Id_Oportunidad]"
+                          length="255"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].Columns[Id_Oportunidad]"
+                          name="Id_Oportunidad"
+                          truncationRowDisposition="FailComponent" />
+                      </outputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].ExternalColumns[Dialog_ID]"
+                          dataType="wstr"
+                          length="255"
+                          name="Dialog_ID" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].ExternalColumns[Identidad]"
+                          dataType="wstr"
+                          length="255"
+                          name="Identidad" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].ExternalColumns[Nombre]"
+                          dataType="wstr"
+                          length="255"
+                          name="Nombre" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].ExternalColumns[CIF]"
+                          dataType="wstr"
+                          length="255"
+                          name="CIF" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].ExternalColumns[NombreTarjeta]"
+                          dataType="wstr"
+                          length="255"
+                          name="NombreTarjeta" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].ExternalColumns[U4D]"
+                          dataType="wstr"
+                          length="255"
+                          name="U4D" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].ExternalColumns[Limite_Aprobado]"
+                          dataType="r8"
+                          name="Limite_Aprobado" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].ExternalColumns[Direcion_Residencia]"
+                          dataType="wstr"
+                          length="255"
+                          name="Direcion_Residencia" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].ExternalColumns[Direcion_laboral]"
+                          dataType="wstr"
+                          length="255"
+                          name="Direcion_laboral" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].ExternalColumns[Marca_Tarjeta]"
+                          dataType="wstr"
+                          length="255"
+                          name="Marca_Tarjeta" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].ExternalColumns[Tipo_Tarjeta]"
+                          dataType="wstr"
+                          length="255"
+                          name="Tipo_Tarjeta" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].ExternalColumns[Telefono]"
+                          dataType="wstr"
+                          length="255"
+                          name="Telefono" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].ExternalColumns[identidad_Adicional]"
+                          dataType="wstr"
+                          length="255"
+                          name="identidad_Adicional" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].ExternalColumns[Nombre_Adicional]"
+                          dataType="wstr"
+                          length="255"
+                          name="Nombre_Adicional" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].ExternalColumns[Fecha_Nacimiento_adicional]"
+                          dataType="wstr"
+                          length="255"
+                          name="Fecha_Nacimiento_adicional" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].ExternalColumns[Parentesco_adicional]"
+                          dataType="wstr"
+                          length="255"
+                          name="Parentesco_adicional" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].ExternalColumns[TipoLimiteCredito]"
+                          dataType="wstr"
+                          length="255"
+                          name="TipoLimiteCredito" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].ExternalColumns[Limite_Restricccion_adicional]"
+                          dataType="wstr"
+                          length="255"
+                          name="Limite_Restricccion_adicional" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].ExternalColumns[Direccion_residencia]"
+                          dataType="wstr"
+                          length="255"
+                          name="Direccion_residencia" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].ExternalColumns[Direccion_Laboral]"
+                          dataType="wstr"
+                          length="255"
+                          name="Direccion_Laboral" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].ExternalColumns[Referencia1_nombre]"
+                          dataType="wstr"
+                          length="255"
+                          name="Referencia1_nombre" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].ExternalColumns[Referencia1_parentezco]"
+                          dataType="wstr"
+                          length="255"
+                          name="Referencia1_parentezco" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].ExternalColumns[Referencia1_telefono]"
+                          dataType="wstr"
+                          length="255"
+                          name="Referencia1_telefono" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].ExternalColumns[Referencia2_nombre]"
+                          dataType="wstr"
+                          length="255"
+                          name="Referencia2_nombre" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].ExternalColumns[Referencia2_parentezco]"
+                          dataType="wstr"
+                          length="255"
+                          name="Referencia2_parentezco" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].ExternalColumns[Referencia2_telefono]"
+                          dataType="wstr"
+                          length="255"
+                          name="Referencia2_telefono" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].ExternalColumns[Log_Tarjeta_Adicional]"
+                          dataType="bool"
+                          name="Log_Tarjeta_Adicional" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].ExternalColumns[log_gestion_completa]"
+                          dataType="bool"
+                          name="log_gestion_completa" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].ExternalColumns[VSN]"
+                          dataType="wstr"
+                          length="255"
+                          name="VSN" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].ExternalColumns[Correo]"
+                          dataType="wstr"
+                          length="255"
+                          name="Correo" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].ExternalColumns[FechaRegistro]"
+                          dataType="date"
+                          name="FechaRegistro" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].ExternalColumns[Id_Oportunidad]"
+                          dataType="wstr"
+                          length="255"
+                          name="Id_Oportunidad" />
+                        <externalMetadataColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].ExternalColumns[NumeroDeAfiliado]"
+                          dataType="wstr"
+                          length="255"
+                          name="NumeroDeAfiliado" />
+                      </externalMetadataColumns>
+                    </output>
+                    <output
+                      refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Error Output]"
+                      isErrorOut="true"
+                      name="Excel Source Error Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Error Output].Columns[Id_Oportunidad]"
+                          dataType="wstr"
+                          length="255"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Error Output].Columns[Id_Oportunidad]"
+                          name="Id_Oportunidad" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort"
+                  componentClassID="Microsoft.Sort"
+                  contactInfo="Sort;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
+                  description="Sorts input data in ascending or descending order when it cannot be sorted at its source. For example, sort sales data by 'customer id' before it is written to a flat file and delivered to another department. Note: We do not recommend this transformation for large data flows."
+                  name="Sort"
+                  version="1">
+                  <properties>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indicates whether the Sort transformation removes rows with duplicate sort values."
+                      name="EliminateDuplicates">false</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the maximum number of threads to use for sorting."
+                      expressionType="Notify"
+                      name="MaximumThreads">-1</property>
+                  </properties>
+                  <inputs>
+                    <input
+                      refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort.Inputs[Sort Input]"
+                      name="Sort Input">
+                      <inputColumns>
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort.Inputs[Sort Input].Columns[Id_Oportunidad]"
+                          cachedDataType="wstr"
+                          cachedLength="255"
+                          cachedName="Id_Oportunidad"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].Columns[Id_Oportunidad]">
+                          <properties>
+                            <property
+                              dataType="System.Int32"
+                              description="Specifies the comparison options for character data."
+                              name="NewComparisonFlags">0</property>
+                            <property
+                              dataType="System.Int32"
+                              description="Specifies the sort order of the column."
+                              name="NewSortKeyPosition">1</property>
+                          </properties>
+                        </inputColumn>
+                      </inputColumns>
+                      <externalMetadataColumns />
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort.Outputs[Sort Output]"
+                      isSorted="true"
+                      name="Sort Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort.Outputs[Sort Output].Columns[Id_Oportunidad]"
+                          dataType="wstr"
+                          length="255"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Sort.Outputs[Sort Output].Columns[Id_Oportunidad]"
+                          name="Id_Oportunidad"
+                          sortKeyPosition="1">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="Specifies the lineage identifier of the input column that is associated with this output column."
+                              name="SortColumnId">#{Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output].Columns[Id_Oportunidad]}</property>
+                          </properties>
+                        </outputColumn>
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1"
+                  componentClassID="Microsoft.Sort"
+                  contactInfo="Sort;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
+                  description="Sorts input data in ascending or descending order when it cannot be sorted at its source. For example, sort sales data by 'customer id' before it is written to a flat file and delivered to another department. Note: We do not recommend this transformation for large data flows."
+                  name="Sort 1"
+                  version="1">
+                  <properties>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indicates whether the Sort transformation removes rows with duplicate sort values."
+                      name="EliminateDuplicates">false</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the maximum number of threads to use for sorting."
+                      expressionType="Notify"
+                      name="MaximumThreads">-1</property>
+                  </properties>
+                  <inputs>
+                    <input
+                      refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Inputs[Sort Input]"
+                      name="Sort Input">
+                      <inputColumns>
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Inputs[Sort Input].Columns[ID_OPORTUNIDAD]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="15"
+                          cachedName="ID_OPORTUNIDAD"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[ID_OPORTUNIDAD]">
+                          <properties>
+                            <property
+                              dataType="System.Int32"
+                              description="Specifies the comparison options for character data."
+                              name="NewComparisonFlags">0</property>
+                            <property
+                              dataType="System.Int32"
+                              description="Specifies the sort order of the column."
+                              name="NewSortKeyPosition">1</property>
+                          </properties>
+                        </inputColumn>
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Inputs[Sort Input].Columns[PAIS]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="3"
+                          cachedName="PAIS"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[PAIS]">
+                          <properties>
+                            <property
+                              dataType="System.Int32"
+                              description="Specifies the comparison options for character data."
+                              name="NewComparisonFlags">0</property>
+                            <property
+                              dataType="System.Int32"
+                              description="Specifies the sort order of the column."
+                              name="NewSortKeyPosition">0</property>
+                          </properties>
+                        </inputColumn>
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Inputs[Sort Input].Columns[FECHA_CREACION]"
+                          cachedDataType="dbTimeStamp"
+                          cachedName="FECHA_CREACION"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[FECHA_CREACION]">
+                          <properties>
+                            <property
+                              dataType="System.Int32"
+                              description="Specifies the comparison options for character data."
+                              name="NewComparisonFlags">0</property>
+                            <property
+                              dataType="System.Int32"
+                              description="Specifies the sort order of the column."
+                              name="NewSortKeyPosition">0</property>
+                          </properties>
+                        </inputColumn>
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Inputs[Sort Input].Columns[FECHA_MODIFICACION]"
+                          cachedDataType="dbTimeStamp"
+                          cachedName="FECHA_MODIFICACION"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[FECHA_MODIFICACION]">
+                          <properties>
+                            <property
+                              dataType="System.Int32"
+                              description="Specifies the comparison options for character data."
+                              name="NewComparisonFlags">0</property>
+                            <property
+                              dataType="System.Int32"
+                              description="Specifies the sort order of the column."
+                              name="NewSortKeyPosition">0</property>
+                          </properties>
+                        </inputColumn>
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Inputs[Sort Input].Columns[AÑO_MODIFICACION]"
+                          cachedDataType="i4"
+                          cachedName="AÑO_MODIFICACION"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[AÑO_MODIFICACION]">
+                          <properties>
+                            <property
+                              dataType="System.Int32"
+                              description="Specifies the comparison options for character data."
+                              name="NewComparisonFlags">0</property>
+                            <property
+                              dataType="System.Int32"
+                              description="Specifies the sort order of the column."
+                              name="NewSortKeyPosition">0</property>
+                          </properties>
+                        </inputColumn>
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Inputs[Sort Input].Columns[MES_MODIFICACION]"
+                          cachedDataType="i4"
+                          cachedName="MES_MODIFICACION"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[MES_MODIFICACION]">
+                          <properties>
+                            <property
+                              dataType="System.Int32"
+                              description="Specifies the comparison options for character data."
+                              name="NewComparisonFlags">0</property>
+                            <property
+                              dataType="System.Int32"
+                              description="Specifies the sort order of the column."
+                              name="NewSortKeyPosition">0</property>
+                          </properties>
+                        </inputColumn>
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Inputs[Sort Input].Columns[PRODUCTO]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="13"
+                          cachedName="PRODUCTO"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[PRODUCTO]">
+                          <properties>
+                            <property
+                              dataType="System.Int32"
+                              description="Specifies the comparison options for character data."
+                              name="NewComparisonFlags">0</property>
+                            <property
+                              dataType="System.Int32"
+                              description="Specifies the sort order of the column."
+                              name="NewSortKeyPosition">0</property>
+                          </properties>
+                        </inputColumn>
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Inputs[Sort Input].Columns[CANAL]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="7"
+                          cachedName="CANAL"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[CANAL]">
+                          <properties>
+                            <property
+                              dataType="System.Int32"
+                              description="Specifies the comparison options for character data."
+                              name="NewComparisonFlags">0</property>
+                            <property
+                              dataType="System.Int32"
+                              description="Specifies the sort order of the column."
+                              name="NewSortKeyPosition">0</property>
+                          </properties>
+                        </inputColumn>
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Inputs[Sort Input].Columns[ESTADO]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="30"
+                          cachedName="ESTADO"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[ESTADO]">
+                          <properties>
+                            <property
+                              dataType="System.Int32"
+                              description="Specifies the comparison options for character data."
+                              name="NewComparisonFlags">0</property>
+                            <property
+                              dataType="System.Int32"
+                              description="Specifies the sort order of the column."
+                              name="NewSortKeyPosition">0</property>
+                          </properties>
+                        </inputColumn>
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Inputs[Sort Input].Columns[ETAPA_ACTUAL]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="30"
+                          cachedName="ETAPA_ACTUAL"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[ETAPA_ACTUAL]">
+                          <properties>
+                            <property
+                              dataType="System.Int32"
+                              description="Specifies the comparison options for character data."
+                              name="NewComparisonFlags">0</property>
+                            <property
+                              dataType="System.Int32"
+                              description="Specifies the sort order of the column."
+                              name="NewSortKeyPosition">0</property>
+                          </properties>
+                        </inputColumn>
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Inputs[Sort Input].Columns[RAZON]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="30"
+                          cachedName="RAZON"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[RAZON]">
+                          <properties>
+                            <property
+                              dataType="System.Int32"
+                              description="Specifies the comparison options for character data."
+                              name="NewComparisonFlags">0</property>
+                            <property
+                              dataType="System.Int32"
+                              description="Specifies the sort order of the column."
+                              name="NewSortKeyPosition">0</property>
+                          </properties>
+                        </inputColumn>
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Inputs[Sort Input].Columns[USUARIO_APERTURA]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="15"
+                          cachedName="USUARIO_APERTURA"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[USUARIO_APERTURA]">
+                          <properties>
+                            <property
+                              dataType="System.Int32"
+                              description="Specifies the comparison options for character data."
+                              name="NewComparisonFlags">0</property>
+                            <property
+                              dataType="System.Int32"
+                              description="Specifies the sort order of the column."
+                              name="NewSortKeyPosition">0</property>
+                          </properties>
+                        </inputColumn>
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Inputs[Sort Input].Columns[USUARIO_MODIFICA]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="15"
+                          cachedName="USUARIO_MODIFICA"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[USUARIO_MODIFICA]">
+                          <properties>
+                            <property
+                              dataType="System.Int32"
+                              description="Specifies the comparison options for character data."
+                              name="NewComparisonFlags">0</property>
+                            <property
+                              dataType="System.Int32"
+                              description="Specifies the sort order of the column."
+                              name="NewSortKeyPosition">0</property>
+                          </properties>
+                        </inputColumn>
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Inputs[Sort Input].Columns[ORIGEN]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="6"
+                          cachedName="ORIGEN"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[ORIGEN]">
+                          <properties>
+                            <property
+                              dataType="System.Int32"
+                              description="Specifies the comparison options for character data."
+                              name="NewComparisonFlags">0</property>
+                            <property
+                              dataType="System.Int32"
+                              description="Specifies the sort order of the column."
+                              name="NewSortKeyPosition">0</property>
+                          </properties>
+                        </inputColumn>
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Inputs[Sort Input].Columns[PAR_ID_OPORTUNIDAD]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="15"
+                          cachedName="PAR_ID_OPORTUNIDAD"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[PAR_ID_OPORTUNIDAD]">
+                          <properties>
+                            <property
+                              dataType="System.Int32"
+                              description="Specifies the comparison options for character data."
+                              name="NewComparisonFlags">0</property>
+                            <property
+                              dataType="System.Int32"
+                              description="Specifies the sort order of the column."
+                              name="NewSortKeyPosition">0</property>
+                          </properties>
+                        </inputColumn>
+                        <inputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Inputs[Sort Input].Columns[FLAG_CLEAN]"
+                          cachedDataType="i4"
+                          cachedName="FLAG_CLEAN"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[FLAG_CLEAN]">
+                          <properties>
+                            <property
+                              dataType="System.Int32"
+                              description="Specifies the comparison options for character data."
+                              name="NewComparisonFlags">0</property>
+                            <property
+                              dataType="System.Int32"
+                              description="Specifies the sort order of the column."
+                              name="NewSortKeyPosition">0</property>
+                          </properties>
+                        </inputColumn>
+                      </inputColumns>
+                      <externalMetadataColumns />
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output]"
+                      isSorted="true"
+                      name="Sort Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[ID_OPORTUNIDAD]"
+                          codePage="1252"
+                          dataType="str"
+                          length="15"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[ID_OPORTUNIDAD]"
+                          name="ID_OPORTUNIDAD"
+                          sortKeyPosition="1">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="Specifies the lineage identifier of the input column that is associated with this output column."
+                              name="SortColumnId">#{Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[ID_OPORTUNIDAD]}</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[PAIS]"
+                          codePage="1252"
+                          dataType="str"
+                          length="3"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[PAIS]"
+                          name="PAIS">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="Specifies the lineage identifier of the input column that is associated with this output column."
+                              name="SortColumnId">#{Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[PAIS]}</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[FECHA_CREACION]"
+                          dataType="dbTimeStamp"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[FECHA_CREACION]"
+                          name="FECHA_CREACION">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="Specifies the lineage identifier of the input column that is associated with this output column."
+                              name="SortColumnId">#{Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[FECHA_CREACION]}</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[FECHA_MODIFICACION]"
+                          dataType="dbTimeStamp"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[FECHA_MODIFICACION]"
+                          name="FECHA_MODIFICACION">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="Specifies the lineage identifier of the input column that is associated with this output column."
+                              name="SortColumnId">#{Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[FECHA_MODIFICACION]}</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[AÑO_MODIFICACION]"
+                          dataType="i4"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[AÑO_MODIFICACION]"
+                          name="AÑO_MODIFICACION">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="Specifies the lineage identifier of the input column that is associated with this output column."
+                              name="SortColumnId">#{Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[AÑO_MODIFICACION]}</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[MES_MODIFICACION]"
+                          dataType="i4"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[MES_MODIFICACION]"
+                          name="MES_MODIFICACION">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="Specifies the lineage identifier of the input column that is associated with this output column."
+                              name="SortColumnId">#{Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[MES_MODIFICACION]}</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[PRODUCTO]"
+                          codePage="1252"
+                          dataType="str"
+                          length="13"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[PRODUCTO]"
+                          name="PRODUCTO">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="Specifies the lineage identifier of the input column that is associated with this output column."
+                              name="SortColumnId">#{Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[PRODUCTO]}</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[CANAL]"
+                          codePage="1252"
+                          dataType="str"
+                          length="7"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[CANAL]"
+                          name="CANAL">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="Specifies the lineage identifier of the input column that is associated with this output column."
+                              name="SortColumnId">#{Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[CANAL]}</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[ESTADO]"
+                          codePage="1252"
+                          dataType="str"
+                          length="30"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[ESTADO]"
+                          name="ESTADO">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="Specifies the lineage identifier of the input column that is associated with this output column."
+                              name="SortColumnId">#{Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[ESTADO]}</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[ETAPA_ACTUAL]"
+                          codePage="1252"
+                          dataType="str"
+                          length="30"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[ETAPA_ACTUAL]"
+                          name="ETAPA_ACTUAL">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="Specifies the lineage identifier of the input column that is associated with this output column."
+                              name="SortColumnId">#{Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[ETAPA_ACTUAL]}</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[RAZON]"
+                          codePage="1252"
+                          dataType="str"
+                          length="30"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[RAZON]"
+                          name="RAZON">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="Specifies the lineage identifier of the input column that is associated with this output column."
+                              name="SortColumnId">#{Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[RAZON]}</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[USUARIO_APERTURA]"
+                          codePage="1252"
+                          dataType="str"
+                          length="15"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[USUARIO_APERTURA]"
+                          name="USUARIO_APERTURA">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="Specifies the lineage identifier of the input column that is associated with this output column."
+                              name="SortColumnId">#{Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[USUARIO_APERTURA]}</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[USUARIO_MODIFICA]"
+                          codePage="1252"
+                          dataType="str"
+                          length="15"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[USUARIO_MODIFICA]"
+                          name="USUARIO_MODIFICA">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="Specifies the lineage identifier of the input column that is associated with this output column."
+                              name="SortColumnId">#{Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[USUARIO_MODIFICA]}</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[ORIGEN]"
+                          codePage="1252"
+                          dataType="str"
+                          length="6"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[ORIGEN]"
+                          name="ORIGEN">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="Specifies the lineage identifier of the input column that is associated with this output column."
+                              name="SortColumnId">#{Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[ORIGEN]}</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[PAR_ID_OPORTUNIDAD]"
+                          codePage="1252"
+                          dataType="str"
+                          length="15"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[PAR_ID_OPORTUNIDAD]"
+                          name="PAR_ID_OPORTUNIDAD">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="Specifies the lineage identifier of the input column that is associated with this output column."
+                              name="SortColumnId">#{Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[PAR_ID_OPORTUNIDAD]}</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[FLAG_CLEAN]"
+                          dataType="i4"
+                          lineageId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output].Columns[FLAG_CLEAN]"
+                          name="FLAG_CLEAN">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="Specifies the lineage identifier of the input column that is associated with this output column."
+                              name="SortColumnId">#{Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output].Columns[FLAG_CLEAN]}</property>
+                          </properties>
+                        </outputColumn>
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+              </components>
+              <paths>
+                <path
+                  refId="Package\Contenedor de secuencias\OBTENER LEADS.Paths[Excel Source Output]"
+                  endId="Package\Contenedor de secuencias\OBTENER LEADS\Sort.Inputs[Sort Input]"
+                  name="Excel Source Output"
+                  startId="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT.Outputs[Excel Source Output]" />
+                <path
+                  refId="Package\Contenedor de secuencias\OBTENER LEADS.Paths[Merge Join Output]"
+                  endId="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination.Inputs[OLE DB Destination Input]"
+                  name="Merge Join Output"
+                  startId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Outputs[Merge Join Output]" />
+                <path
+                  refId="Package\Contenedor de secuencias\OBTENER LEADS.Paths[OLE DB Source Output]"
+                  endId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Inputs[Sort Input]"
+                  name="OLE DB Source Output"
+                  startId="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS.Outputs[OLE DB Source Output]" />
+                <path
+                  refId="Package\Contenedor de secuencias\OBTENER LEADS.Paths[Sort Output]"
+                  endId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Left Input]"
+                  name="Sort Output"
+                  startId="Package\Contenedor de secuencias\OBTENER LEADS\Sort.Outputs[Sort Output]" />
+                <path
+                  refId="Package\Contenedor de secuencias\OBTENER LEADS.Paths[Sort Output1]"
+                  endId="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join.Inputs[Merge Join Right Input]"
+                  name="Sort Output"
+                  startId="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1.Outputs[Sort Output]" />
+              </paths>
+            </pipeline>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Contenedor de secuencias.PrecedenceConstraints[Restricción]"
+          DTS:CreationName=""
+          DTS:DTSID="{3C46743A-D1A1-49A3-A95A-8C510218C4E1}"
+          DTS:From="Package\Contenedor de secuencias\ELIMINAR REGISTROS ANTIGUOS"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Restricción"
+          DTS:To="Package\Contenedor de secuencias\OBTENER LEADS" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--Esta sección CDATA contiene la información de diseño del paquete. Esta sección incluye información como, por ejemplo, las coordenadas (x,y), el ancho y el alto.-->
+<!--Si edita manualmente esta sección y comete un error, puede eliminarlo. -->
+<!--El paquete podrá cargarse normalmente, pero se perderá la información de diseño anterior y el diseñador reorganizará los elementos automáticamente en la superficie de diseño.-->
+<Objects
+  Version="8">
+  <!--Cada uno de los nodos siguientes contiene propiedades que no afectan al comportamiento en tiempo de ejecución.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="259,42"
+          Id="Package\Contenedor de secuencias\ELIMINAR REGISTROS ANTIGUOS"
+          TopLeft="24.5,18" />
+        <NodeLayout
+          Size="171,42"
+          Id="Package\Contenedor de secuencias\OBTENER LEADS"
+          TopLeft="72,108" />
+        <EdgeLayout
+          Id="Package\Contenedor de secuencias.PrecedenceConstraints[Restricción]"
+          TopLeft="155.75,60">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,48"
+              Start="0,0"
+              End="0,40.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,40.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="336,221"
+          Size="336,264"
+          Id="Package\Contenedor de secuencias"
+          TopLeft="257,177" />
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\Contenedor de secuencias\OBTENER LEADS">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="180,42"
+          Id="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT"
+          TopLeft="175,85" />
+        <NodeLayout
+          Size="144,42"
+          Id="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS"
+          TopLeft="518,85" />
+        <NodeLayout
+          Size="99,42"
+          Id="Package\Contenedor de secuencias\OBTENER LEADS\Sort"
+          TopLeft="217,237" />
+        <EdgeLayout
+          Id="Package\Contenedor de secuencias\OBTENER LEADS.Paths[Excel Source Output]"
+          TopLeft="265.75,127">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,110"
+              Start="0,0"
+              End="0,102.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,102.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="108,42"
+          Id="Package\Contenedor de secuencias\OBTENER LEADS\Sort 1"
+          TopLeft="535,236" />
+        <EdgeLayout
+          Id="Package\Contenedor de secuencias\OBTENER LEADS.Paths[OLE DB Source Output]"
+          TopLeft="589.5,127">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,109"
+              Start="0,0"
+              End="0,101.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,101.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="133,42"
+          Id="Package\Contenedor de secuencias\OBTENER LEADS\Merge Join"
+          TopLeft="355,341" />
+        <EdgeLayout
+          Id="Package\Contenedor de secuencias\OBTENER LEADS.Paths[Sort Output]"
+          TopLeft="266.5,279">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="155,62"
+              Start="0,0"
+              End="155,54.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,27" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,27"
+                    Point2="0,31"
+                    Point3="4,31" />
+                  <mssgle:LineSegment
+                    End="151,31" />
+                  <mssgle:CubicBezierSegment
+                    Point1="151,31"
+                    Point2="155,31"
+                    Point3="155,35" />
+                  <mssgle:LineSegment
+                    End="155,54.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Contenedor de secuencias\OBTENER LEADS.Paths[Sort Output1]"
+          TopLeft="589,278">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-146.666666666667,63"
+              Start="0,0"
+              End="-146.666666666667,55.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,33.3506686478455" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,33.3506686478455"
+                    Point2="0,37.3506686478455"
+                    Point3="-4,37.3506686478455" />
+                  <mssgle:LineSegment
+                    End="-142.666666666667,37.3506686478455" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-142.666666666667,37.3506686478455"
+                    Point2="-146.666666666667,37.3506686478455"
+                    Point3="-146.666666666667,41.3506686478455" />
+                  <mssgle:LineSegment
+                    End="-146.666666666667,55.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="177,42"
+          Id="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination"
+          TopLeft="331,439" />
+        <EdgeLayout
+          Id="Package\Contenedor de secuencias\OBTENER LEADS.Paths[Merge Join Output]"
+          TopLeft="420.5,383">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,56"
+              Start="0,0"
+              End="0,48.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,48.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Contenedor de secuencias\OBTENER LEADS\OUTPUT CHATBOT">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Contenedor de secuencias\OBTENER LEADS\INFO LEADS">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Contenedor de secuencias\OBTENER LEADS\OLE DB Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>
