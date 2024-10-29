@@ -2,18 +2,18 @@
 <BuildLog xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <ProjectInfo>
     <Name>ETL_CHATBOT_PAN</Name>
-    <LastWriteTime>2024-10-03T21:39:26.6168155Z</LastWriteTime>
+    <LastWriteTime>2024-10-29T20:00:00.0763383Z</LastWriteTime>
     <LastKnownProtectionLevel>EncryptSensitiveWithUserKey</LastKnownProtectionLevel>
   </ProjectInfo>
   <LastBuildInfos>
     <ProjectBuildItemInfo>
       <Name>ETL_CHATBOT_PAN.dtsx</Name>
-      <LastWriteTime>2024-10-08T19:56:47.723689Z</LastWriteTime>
+      <LastWriteTime>2024-10-29T20:00:00.0290658Z</LastWriteTime>
       <LastKnownProtectionLevel>EncryptSensitiveWithUserKey</LastKnownProtectionLevel>
     </ProjectBuildItemInfo>
     <ProjectBuildItemInfo>
       <Name>INSERT_LEADS_DIG.dtsx</Name>
-      <LastWriteTime>2024-10-03T15:22:14Z</LastWriteTime>
+      <LastWriteTime>2024-10-24T16:13:54.2951645Z</LastWriteTime>
       <LastKnownProtectionLevel>EncryptSensitiveWithUserKey</LastKnownProtectionLevel>
     </ProjectBuildItemInfo>
   </LastBuildInfos>

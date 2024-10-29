@@ -7,23 +7,24 @@
   DTS:CreatorName="COMBCOCR\daniel.brenesm"
   DTS:DTSID="{615C6119-2B71-4333-8BB8-A4474B77227E}"
   DTS:ExecutableType="Microsoft.Package"
-  DTS:LastModifiedProductVersion="16.0.5223.0"
+  DTS:LastModifiedProductVersion="16.0.5556.0"
   DTS:LocaleID="5130"
   DTS:ObjectName="ETL_CHATBOT_PAN"
   DTS:PackageType="5"
-  DTS:VersionBuild="143"
-  DTS:VersionGUID="{5D028FC8-063C-4D4F-959A-562F823A8D37}">
+  DTS:VersionBuild="150"
+  DTS:VersionGUID="{D9C758AC-A60D-43BB-9DD2-3594CC4C345E}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
     <DTS:ConnectionManager
       DTS:refId="Package.ConnectionManagers[Administrador de conexiones SMTP]"
       DTS:CreationName="SMTP"
+      DTS:Description="Administrador de conexiones SMTP"
       DTS:DTSID="{87467952-F0E6-42D2-A528-FC20A48D78FD}"
       DTS:ObjectName="Administrador de conexiones SMTP">
       <DTS:ObjectData>
         <SmtpConnectionManager
-          ConnectionString="SmtpServer=smtp.office365.com;UseWindowsAuthentication=False;EnableSsl=False;"
+          ConnectionString="SmtpServer=172.16.100.86;UseWindowsAuthentication=False;EnableSsl=False;Timeout=120;"
           ConnectByProxy="False" />
       </DTS:ObjectData>
     </DTS:ConnectionManager>
@@ -40,7 +41,7 @@
       DTS:LocaleID="-1"
       DTS:ObjectName="ELIMINAR DATOS DE CAMPAÑA MES ANTERIOR (SE EJECUTA EL 1O DE CASA MES)"
       DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
-      DTS:ThreadHint="0">
+      DTS:ThreadHint="1">
       <DTS:Variables />
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
@@ -52,13 +53,12 @@
       DTS:refId="Package\NOTIFICACION CARGA BASE CAMPAÑA ACTUAL"
       DTS:CreationName="Microsoft.SendMailTask"
       DTS:Description="Tarea Enviar correo"
-      DTS:Disabled="True"
       DTS:DTSID="{F91373EE-625D-4F9D-80F7-0B51B72CDF7F}"
       DTS:ExecutableType="Microsoft.SendMailTask"
       DTS:LocaleID="-1"
       DTS:ObjectName="NOTIFICACION CARGA BASE CAMPAÑA ACTUAL"
       DTS:TaskContact="Send Mail Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
-      DTS:ThreadHint="1">
+      DTS:ThreadHint="0">
       <DTS:Variables />
       <DTS:ObjectData>
         <SendMailTask:SendMailTaskData
@@ -79,7 +79,7 @@
       DTS:LocaleID="-1"
       DTS:ObjectName="NOTIFICACION ELIMINACION CAMPAÑA ANTERIOR"
       DTS:TaskContact="Send Mail Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
-      DTS:ThreadHint="0">
+      DTS:ThreadHint="1">
       <DTS:Variables />
       <DTS:ObjectData />
     </DTS:Executable>
@@ -87,6 +87,7 @@
       DTS:refId="Package\PREAPROBADOS HON - CHATBOT TJC"
       DTS:CreationName="STOCK:SEQUENCE"
       DTS:Description="Contenedor de secuencias"
+      DTS:Disabled="True"
       DTS:DTSID="{C61D0A75-CC72-4A86-8302-3C0C0C4BA709}"
       DTS:ExecutableType="STOCK:SEQUENCE"
       DTS:LocaleID="-1"
@@ -102,7 +103,7 @@
           DTS:LocaleID="-1"
           DTS:ObjectName="FORMATO IDENTIDAD"
           DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
-          DTS:ThreadHint="1">
+          DTS:ThreadHint="0">
           <DTS:Variables />
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
@@ -120,7 +121,7 @@
           DTS:LocaleID="-1"
           DTS:ObjectName="LIMPIAR BASE MES ACTUAL"
           DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
-          DTS:ThreadHint="1">
+          DTS:ThreadHint="0">
           <DTS:Variables />
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
@@ -175,7 +176,7 @@ WITH DESCOMPONER_DESC AS (
 		   value AS PARTE,
 		   CHAR(ROW_NUMBER() OVER(PARTITION BY ID_OPORTUNIDAD ORDER BY (SELECT  NULL))+64) AS PARTE_LETRA
 
-	FROM (SELECT ROW_ID AS ID_OPORTUNIDAD, REPLACE(DESC_TEXT,'/','-') AS DESC_TEXT FROM [DWSiebel].[PAN].[S_OPTY] WHERE OPTY_CD = 'PREAPROBADO' and NAME LIKE '%OCT2024%' and NAME LIKE '%PPA%' and NAME LIKE 'PANC%' and CREATED_BY = '1-E1CM-0')B 
+	FROM (SELECT ROW_ID AS ID_OPORTUNIDAD, REPLACE(DESC_TEXT,'/','-') AS DESC_TEXT FROM [DWSiebel].[PAN].[S_OPTY] WHERE OPTY_CD = 'PREAPROBADO' and NAME LIKE '%NOV2024%' and NAME LIKE '%PPA%' and NAME LIKE 'PANC%' and CREATED_BY = '1-E1CM-0')B 
 	CROSS APPLY string_split(DESC_TEXT,'-')
 )
 
@@ -489,7 +490,7 @@ WITH DESCOMPONER_NAME AS (
 			
 		   VALUE AS PARTE_NAME,
 		   ROW_NUMBER() OVER(PARTITION BY ID_OPORTUNIDAD ORDER BY (SELECT  NULL)) AS PARTE_NUM
-	FROM (SELECT ROW_ID AS ID_OPORTUNIDAD, REPLACE(NAME,'/','-') as NAME FROM [DWSiebel].[PAN].[S_OPTY] WHERE OPTY_CD = 'PREAPROBADO' and NAME LIKE '%OCT2024%' and NAME LIKE '%PPA%' and NAME LIKE 'PANC%' and CREATED_BY = '1-E1CM-0')B 
+	FROM (SELECT ROW_ID AS ID_OPORTUNIDAD, REPLACE(NAME,'/','-') as NAME FROM [DWSiebel].[PAN].[S_OPTY] WHERE OPTY_CD = 'PREAPROBADO' and NAME LIKE '%NOV2024%' and NAME LIKE '%PPA%' and NAME LIKE 'PANC%' and CREATED_BY = '1-E1CM-0')B 
 	CROSS APPLY string_split(NAME,'-')
 )
 
@@ -2066,7 +2067,7 @@ WITH DESCOMPONER_NAME AS (
 			
 		   VALUE AS PARTE_NAME,
 		   ROW_NUMBER() OVER(PARTITION BY ID_OPORTUNIDAD ORDER BY (SELECT  NULL)) AS PARTE_NUM
-	FROM (SELECT ROW_ID AS ID_OPORTUNIDAD, REPLACE(NAME,'/','-') as NAME FROM [DWSiebel].[PAN].[S_OPTY] WHERE OPTY_CD = 'PREAPROBADO' and NAME LIKE '%OCT2024%' and NAME LIKE '%PPA%' and NAME LIKE 'PANC%' and CREATED_BY = '1-E1CM-0')B 
+	FROM (SELECT ROW_ID AS ID_OPORTUNIDAD, REPLACE(NAME,'/','-') as NAME FROM [DWSiebel].[PAN].[S_OPTY] WHERE OPTY_CD = 'PREAPROBADO' and NAME LIKE '%NOV2024%' and NAME LIKE '%PPA%' and NAME LIKE 'PANC%' and CREATED_BY = '1-E1CM-0')B 
 	CROSS APPLY string_split(NAME,'-')
 )
 
@@ -2338,12 +2339,11 @@ WHERE NOMBRE_CAMPAÑA NOT IN ('XSELLING','PLANILLA')</property>
                       dataType="System.String"
                       description="The SQL command to be executed."
                       name="SqlCommand"
-                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT *
-FROM (  SELECT NOMBRE + ' ' + APELLIDO1 AS NOMBRE_COMPLETO,
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT NOMBRE + ' ' + APELLIDO1 AS NOMBRE_COMPLETO,
 			   CASE WHEN EMAIL IS NULL THEN '' ELSE EMAIL END AS EMAIL,
 			   REPLACE(NUMERO_IDENTIFICACION,'-','') AS CEDULA,
 			   FECHA_CARGA
-		FROM [DWH_PERSONAS].[PAN].[PROSPECTOS]) A</property>
+  FROM [STAGE_PERSONAS_REG].[PAN].[PROSPECTOS]</property>
                     <property
                       dataType="System.String"
                       description="The variable that contains the SQL command to be executed."
@@ -2529,7 +2529,7 @@ WITH DESCOMPONER_DESC AS (
 		   value AS PARTE,
 		   CHAR(ROW_NUMBER() OVER(PARTITION BY ID_OPORTUNIDAD ORDER BY (SELECT  NULL))+64) AS PARTE_LETRA
 
-	FROM (SELECT ROW_ID AS ID_OPORTUNIDAD, REPLACE(DESC_TEXT,'/','-') AS DESC_TEXT FROM [DWSiebel].[PAN].[S_OPTY] WHERE OPTY_CD = 'PREAPROBADO' and NAME LIKE '%OCT2024%' and NAME LIKE '%PPA%' and NAME LIKE 'PANC%' and CREATED_BY = '1-E1CM-0')B 
+	FROM (SELECT ROW_ID AS ID_OPORTUNIDAD, REPLACE(DESC_TEXT,'/','-') AS DESC_TEXT FROM [DWSiebel].[PAN].[S_OPTY] WHERE OPTY_CD = 'PREAPROBADO' and NAME LIKE '%NOV2024%' and NAME LIKE '%PPA%' and NAME LIKE 'PANC%' and CREATED_BY = '1-E1CM-0')B 
 	CROSS APPLY string_split(DESC_TEXT,'-')
 )
 
@@ -4891,31 +4891,31 @@ from (
       <GraphLayout
         Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
-          Size="297.333333333334,93.3333333333334"
+          Size="297,93"
           Id="Package\ELIMINAR DATOS DE CAMPAÑA MES ANTERIOR (SE EJECUTA EL 1O DE CASA MES)"
           TopLeft="660.259415474948,64.4451516198329" />
         <NodeLayout
-          Size="428.666666666667,42.6666666666667"
+          Size="429,43"
           Id="Package\NOTIFICACION CARGA BASE CAMPAÑA ACTUAL"
           TopLeft="119.886358277026,601.483246984349" />
         <NodeLayout
-          Size="297.333333333334,68"
+          Size="297,68"
           Id="Package\NOTIFICACION ELIMINACION CAMPAÑA ANTERIOR"
           TopLeft="667.613606518981,260.622006707799" />
         <NodeLayout
-          Size="193.333333333334,42.6666666666667"
+          Size="193,43"
           Id="Package\PREAPROBADOS HON - CHATBOT TJC\FORMATO IDENTIDAD"
           TopLeft="118.473205502678,368.240597526429" />
         <NodeLayout
-          Size="224,42.6666666666667"
+          Size="224,43"
           Id="Package\PREAPROBADOS HON - CHATBOT TJC\LIMPIAR BASE MES ACTUAL"
           TopLeft="107.031240297948,57.9122795974176" />
         <NodeLayout
-          Size="301.333333333334,42"
+          Size="301,42"
           Id="Package\PREAPROBADOS HON - CHATBOT TJC\OBTENER DATOS CLIENTES EXISTENTES"
           TopLeft="65.3124697366736,159.570170722001" />
         <NodeLayout
-          Size="273.333333333334,42"
+          Size="273,42"
           Id="Package\PREAPROBADOS HON - CHATBOT TJC\OBTENER DATOS CLIENTES NUEVOS"
           TopLeft="82.7693051642838,253.341474129055" />
         <EdgeLayout
@@ -4987,8 +4987,8 @@ from (
         <ContainerLayout
           HeaderHeight="43"
           IsExpanded="True"
-          PanelSize="430,448.666666666667"
-          Size="430,491.333333333334"
+          PanelSize="430,449"
+          Size="430,491"
           Id="Package\PREAPROBADOS HON - CHATBOT TJC"
           TopLeft="115.354432072692,47.6873997953807" />
         <EdgeLayout
@@ -5044,19 +5044,19 @@ from (
       <GraphLayout
         Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
-          Size="98.6666666666667,42.6666666666667"
+          Size="99,43"
           Id="Package\PREAPROBADOS HON - CHATBOT TJC\OBTENER DATOS CLIENTES EXISTENTES\Sort"
           TopLeft="272.999991863966,306.999990850687" />
         <NodeLayout
-          Size="174.666666666667,42"
+          Size="175,42"
           Id="Package\PREAPROBADOS HON - CHATBOT TJC\OBTENER DATOS CLIENTES EXISTENTES\OLE DB Destination"
           TopLeft="481.999985307455,579.999982774258" />
         <NodeLayout
-          Size="132,42.6666666666667"
+          Size="132,43"
           Id="Package\PREAPROBADOS HON - CHATBOT TJC\OBTENER DATOS CLIENTES EXISTENTES\Merge Join"
           TopLeft="500.999985069037,443.999986767769" />
         <NodeLayout
-          Size="108,42.6666666666667"
+          Size="108,43"
           Id="Package\PREAPROBADOS HON - CHATBOT TJC\OBTENER DATOS CLIENTES EXISTENTES\Sort 1"
           TopLeft="701.99997907877,315.999990582466" />
         <NodeLayout
@@ -5237,7 +5237,7 @@ from (
     design-time-name="Package\PREAPROBADOS HON - CHATBOT TJC\OBTENER DATOS CLIENTES NUEVOS">
     <LayoutInfo>
       <GraphLayout
-        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
           Size="108,42"
           Id="Package\PREAPROBADOS HON - CHATBOT TJC\OBTENER DATOS CLIENTES NUEVOS\Sort 2"
@@ -5273,7 +5273,7 @@ from (
         <NodeLayout
           Size="163,42"
           Id="Package\PREAPROBADOS HON - CHATBOT TJC\OBTENER DATOS CLIENTES NUEVOS\INFO CAMPAÑA"
-          TopLeft="54,72" />
+          TopLeft="72,70" />
         <NodeLayout
           Size="177,42"
           Id="Package\PREAPROBADOS HON - CHATBOT TJC\OBTENER DATOS CLIENTES NUEVOS\INFO PROSPECTO"
@@ -5297,9 +5297,7 @@ from (
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -5321,9 +5319,7 @@ from (
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -5357,9 +5353,7 @@ from (
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -5393,9 +5387,7 @@ from (
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -5429,9 +5421,7 @@ from (
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -5465,9 +5455,7 @@ from (
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -5489,9 +5477,7 @@ from (
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
@@ -5513,45 +5499,29 @@ from (
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
           Id="Package\PREAPROBADOS HON - CHATBOT TJC\OBTENER DATOS CLIENTES NUEVOS.Paths[OLE DB Source Output]"
-          TopLeft="135.5,114">
+          TopLeft="154.5,112">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="20,85"
+              EndConnector="0,87"
               Start="0,0"
-              End="20,77.5">
+              End="0,79.5">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,38.5" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,38.5"
-                    Point2="0,42.5"
-                    Point3="4,42.5" />
-                  <mssgle:LineSegment
-                    End="16,42.5" />
-                  <mssgle:CubicBezierSegment
-                    Point1="16,42.5"
-                    Point2="20,42.5"
-                    Point3="20,46.5" />
-                  <mssgle:LineSegment
-                    End="20,77.5" />
+                    End="0,79.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="0,0,0,0"
-              RelativePosition="Any" />
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
